@@ -2,6 +2,14 @@ require_relative "empty_square"
 require_relative "player"
 require_relative "piece"
 require_relative "board"
+require_relative "stepping_piece"
+require_relative "sliding_piece"
+require_relative "rook"
+require_relative "bishop"
+require_relative "knight"
+require_relative "queen"
+require_relative "king"
+require_relative "pawn"
 
 require "colorize"
 require "byebug"
@@ -22,6 +30,8 @@ class ChessGame
     @board.render(nil, [0,0], @winner)
     puts "Congratulations #{@winner}!"
   end
+  
+  private
 
   def play_turn
     puts "#{@players[0]}'s turn'"

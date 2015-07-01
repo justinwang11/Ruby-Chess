@@ -2,11 +2,7 @@ class EmptySquare
   def to_s
     "   "
   end
-
-  def piece?
-    false
-  end
-
+  
   def empty?
     true
   end
@@ -14,5 +10,5 @@ class EmptySquare
   def king?
     false
   end
-  
+
 end

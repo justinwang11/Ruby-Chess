@@ -44,60 +44,9 @@ class Board
     board
   end
 
-  def other_color(color)
-    color == :white ? :black : :white
-  end
-
-  def checkmate?(color)
-    if in_check?(color)
-      get_pieces(color).map(&:legal_moves).flatten.empty?
-    else
-      false
-    end
-  end
-
-  def in_check?(color)
-    king_location = find_king(color)
-    get_pieces(other_color(color)).any? do |piece|
-      piece.moves.include?(king_location)
-    end
-  end
-
-  def find_king(color)
-    @grid.each_with_index do |row, i|
-      row.each_with_index do |square, j|
-        return [i, j] if square.king? && square.color == color
-      end
-    end
-
-    raise "There should be a king"
-    nil
-  end
-
-  def get_pieces(color)
-    pieces_arr = []
-    @grid.each_with_index do |row, i|
-      row.each_with_index do |square, j|
-        pieces_arr << square if square.piece? && square.color == color
-      end
-    end
-    pieces_arr
-  end
-
-  def get_yellow_squares(clicked, cursor, color)
-    current_square = clicked.nil? ? piece_at(cursor) : piece_at(clicked)
-    if current_square.piece? && current_square.color == color
-      current_square.legal_moves
-    else
-      []
-    end
-  end
-
   def render(clicked, cursor, player_color)
-    cursor_square = piece_at(cursor)
     possible_moves = get_yellow_squares(clicked, cursor, player_color)
     #debugger
-
     @grid.each_with_index do |row, i|
       row.each_with_index do |square, j|
         color = nil
@@ -115,41 +64,29 @@ class Board
     print_debug_stuff
   end
 
-  def debug_find_black_queen
-    @grid.each_with_index do |row, i|
-      row.each_with_index do |square, j|
-        return square if square.is_a?(Queen) && square.color == :black
-      end
+  def checkmate?(color)
+    if in_check?(color)
+      get_pieces(color).map(&:legal_moves).flatten.empty?
+    else
+      false
     end
   end
 
-  def print_debug_stuff
-    if @debug
-      puts in_check?(:black)
-      puts in_check?(:white)
-      p king = find_king(:white)
-      p king.class
-
-      bq = debug_find_black_queen
-      p bq.moves
-      p bq.pos
+  def in_check?(color)
+    king_location = find_king(color)
+    get_pieces(other_color(color)).any? do |piece|
+      piece.moves.include?(king_location)
     end
-
-  end
-
-  def self.add(pos1, pos2)
-    [pos1[0] + pos2[0], pos1[1] + pos2[1]]
   end
 
   def occupied?(pos)
-    piece_at(pos).piece?
+    !piece_at(pos).empty?
   end
 
   def occupied_by_color?(pos, color)
     if occupied?(pos)
       return piece_at(pos).color == color
     end
-
     false
   end
 
@@ -172,7 +109,6 @@ class Board
     piece.move_piece(from_pos)
   end
 
-
   def piece_at(pos)
     @grid[pos[0]][pos[1]]
   end
@@ -183,6 +119,62 @@ class Board
 
   def in_bounds?(pos)
     pos.all? { |n| n.between?(0, 7) }
+  end
+
+  private
+
+  def other_color(color)
+    color == :white ? :black : :white
+  end
+
+  def find_king(color)
+    @grid.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        return [i, j] if square.king? && square.color == color
+      end
+    end
+    raise "There should be a king"
+    nil
+  end
+
+  def get_pieces(color)
+    pieces_arr = []
+    @grid.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        pieces_arr << square if !square.empty? && square.color == color
+      end
+    end
+    pieces_arr
+  end
+
+  def get_yellow_squares(clicked, cursor, color)
+    current_square = clicked.nil? ? piece_at(cursor) : piece_at(clicked)
+    if !current_square.empty? && current_square.color == color
+      current_square.legal_moves
+    else
+      []
+    end
+  end
+
+  def debug_find_black_queen
+    @grid.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+        return square if square.is_a?(Queen) && square.color == :black
+      end
+    end
+  end
+
+  def print_debug_stuff
+    if @debug
+      puts in_check?(:black)
+      puts in_check?(:white)
+      p king = find_king(:white)
+      p king.class
+
+      bq = debug_find_black_queen
+      p bq.moves
+      p bq.pos
+    end
   end
 
 end

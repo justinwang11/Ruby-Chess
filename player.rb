@@ -48,10 +48,6 @@ class Player
     piece.legal_moves.include?(to_pos)
   end
 
-  def do_action(input)
-    send(ACTIONS[input])
-  end
-
   def quit_game
     exit
   end
@@ -68,9 +64,11 @@ class Player
     end
   end
 
+  private
+
   def new_cursor_position(input)
     move = MOVEMENTS[input]
-    new_pos = Board.add(@cursor, move)
+    new_pos = [@cursor[0] + move[0], @cursor[1] + move[1]]
     new_pos.each_with_index do |num, i|
       if num < 0
         new_pos[i] = 0
@@ -81,6 +79,8 @@ class Player
     @cursor = new_pos
   end
 
-
+  def do_action(input)
+    send(ACTIONS[input])
+  end
 
 end
