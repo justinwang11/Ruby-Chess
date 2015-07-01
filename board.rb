@@ -61,6 +61,11 @@ class Board
       end
       puts
     end
+    puts "W,A,S,D => move cursor"
+    puts "ENTER to select and move pieces"
+    puts "Q => quit"
+    puts "V => save & quit"
+    puts "L => load saved game"
     print_debug_stuff
   end
 

@@ -19,7 +19,8 @@ class Player
 
   ACTIONS = {
     "q" => :quit_game,
-    "\r" => :click_space
+    "\r" => :click_space,
+    "v" => :save_quit
   }
 
   def get_move
@@ -62,6 +63,10 @@ class Player
     elsif
       @move = [@clicked, @cursor]
     end
+  end
+
+  def save_quit
+    raise SaveAndQuit
   end
 
   private
