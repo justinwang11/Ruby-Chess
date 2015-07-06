@@ -54,7 +54,8 @@ class Player
   end
 
   def click_space
-    if @clicked.nil? && @board.occupied_by_color?(@cursor, @color)
+    if @clicked.nil? && @board.occupied_by_color?(@cursor, @color) &&
+      !@board.piece_at(@cursor).legal_moves.empty?
       @clicked = @cursor
     elsif @clicked.nil?
       #do nothing

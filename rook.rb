@@ -6,4 +6,8 @@ class Rook < SlidingPiece
   def to_s
     colorize_piece(" ♜ ")
   end
+
+  def value
+    5
+  end
 end

@@ -8,7 +8,7 @@ class Board
     @grid = Array.new(8) do
       Array.new(8) { EMPTY_SQUARE }
     end
-    #@debug = true
+    @debug = true
     @moves = []
   end
 
@@ -46,10 +46,9 @@ class Board
 
   def render(clicked, cursor, player_color)
     possible_moves = get_yellow_squares(clicked, cursor, player_color)
-    #debugger
+    print_dead_pieces(:white)
     @grid.each_with_index do |row, i|
       row.each_with_index do |square, j|
-        color = nil
         if cursor == [i, j]
           color = :red
         elsif possible_moves.include?([i, j])
@@ -61,20 +60,26 @@ class Board
       end
       puts
     end
-    puts "W,A,S,D => move cursor"
-    puts "ENTER to select and move pieces"
-    puts "Q => quit"
-    puts "V => save & quit"
-    puts "L => load saved game"
+    print_dead_pieces(:black)
+    print_instructions
     print_debug_stuff
+  end
+
+  def captured_pieces
+    pieces = @moves.map { |item| item.last }
+    pieces.select { |piece| !piece.empty? }
   end
 
   def checkmate?(color)
     if in_check?(color)
-      get_pieces(color).map(&:legal_moves).flatten.empty?
+      no_moves?(color)
     else
       false
     end
+  end
+
+  def no_moves?(color)
+    get_pieces(color).map(&:legal_moves).flatten.empty?
   end
 
   def in_check?(color)
@@ -112,6 +117,15 @@ class Board
     add_piece(from_pos, piece)
     add_piece(to_pos, captured_piece)
     piece.move_piece(from_pos)
+  end
+
+  def all_possible_moves(color)
+    move_hash = Hash.new
+    get_pieces(color).each do |piece|
+      move_hash[piece.pos] = piece.legal_moves
+    end
+    move_hash.reject! { |pos, arr| arr.empty? }
+    move_hash
   end
 
   def piece_at(pos)
@@ -169,6 +183,31 @@ class Board
     end
   end
 
+  def print_dead_pieces(color)
+    dead_pieces = captured_pieces.select { |piece| piece.color == color }
+    background_color = :light_green
+
+    2.times do
+      8.times do
+        piece = dead_pieces.shift
+        if piece.nil?
+          print "   ".colorize(:background => background_color)
+        else
+          print piece.to_s.colorize(:background => background_color)
+        end
+      end
+      puts
+    end
+  end
+
+  def print_instructions
+    puts "W,A,S,D => move cursor"
+    puts "ENTER to select and move pieces"
+    puts "Q => quit"
+    puts "V => save & quit"
+    puts "L => load saved game"
+  end
+
   def print_debug_stuff
     if @debug
       puts in_check?(:black)
@@ -176,9 +215,12 @@ class Board
       p king = find_king(:white)
       p king.class
 
-      bq = debug_find_black_queen
-      p bq.moves
-      p bq.pos
+      # bq = debug_find_black_queen
+      # p bq.moves
+      # p bq.pos
+
+      p piece_at(find_king(:white)).legal_moves
+      p no_moves?(:white)
     end
   end
 

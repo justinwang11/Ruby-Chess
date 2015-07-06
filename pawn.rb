@@ -25,6 +25,10 @@ class Pawn < Piece
     colorize_piece(" ♟ ")
   end
 
+  def value
+    1
+  end
+
   private
 
   def valid_move_vertical?(move)

@@ -6,4 +6,8 @@ class Queen < SlidingPiece
   def to_s
     colorize_piece(" ♛ ")
   end
+
+  def value
+    9
+  end
 end

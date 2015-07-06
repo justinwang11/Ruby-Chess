@@ -1,5 +1,6 @@
 require_relative "empty_square"
 require_relative "player"
+require_relative "computerplayer"
 require_relative "piece"
 require_relative "board"
 require_relative "stepping_piece"
@@ -11,6 +12,7 @@ require_relative "queen"
 require_relative "king"
 require_relative "pawn"
 require_relative "exceptions"
+#require_relative "gamenode"
 
 require "colorize"
 require "byebug"
@@ -40,7 +42,7 @@ class ChessGame
   def self.new_game
     board = Board.populate_board
     player = Player.new(board, :white)
-    player2 = Player.new(board, :black)
+    player2 = ComputerPlayer.new(board, :black)
     chess = ChessGame.new([player, player2])
     chess.play
   end
@@ -69,7 +71,12 @@ class ChessGame
     end
     system("clear")
     @board.render(nil, [0,0], @winner)
-    puts "Congratulations #{@winner}!"
+    if @winner.nil?
+      puts "It's a draw!"
+    else
+      puts "Congratulations #{@winner}!"
+    end
+
   rescue SaveAndQuit
     save_and_quit
   end
@@ -88,6 +95,9 @@ class ChessGame
       true
     elsif @board.checkmate?(:black)
       @winner = :white
+      true
+    elsif @board.no_moves?(:white) || @board.no_moves?(:black)
+      @winner = nil
       true
     else
       false
