@@ -8,7 +8,7 @@ class Board
     @grid = Array.new(8) do
       Array.new(8) { EMPTY_SQUARE }
     end
-    @debug = true
+    @debug = false
     @moves = []
   end
 
