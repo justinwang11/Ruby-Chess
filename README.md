@@ -1,6 +1,6 @@
 # Ruby Chess
 
-This was a 2-day project. My blog posts for this day are [here][day1] and [here][day2].
+This was a 2-day project. I wrote blog posts about building this game [here][day1] and [here][day2].
 [day1]: http://justinwang11.tumblr.com/post/122918189472/w2d2
 [day2]: http://justinwang11.tumblr.com/post/123025365177/w2d3
 
